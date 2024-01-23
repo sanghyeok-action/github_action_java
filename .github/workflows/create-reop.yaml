@@ -10,11 +10,11 @@ on:
         options:
           - example
           - service
-        name:
-          description: 'set repo name'
-          required: true
-          default: 'github-actions'
-          type: string
+      name:
+        description: 'set repo name'
+        required: true
+        default: 'github-actions'
+        type: string
 
 jobs:
   create-repo-automation:
