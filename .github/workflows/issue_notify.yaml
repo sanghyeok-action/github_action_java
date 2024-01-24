@@ -1,0 +1,26 @@
+name: issue-notify
+on:
+  issue:
+    types:[opened]
+
+jobs:
+  get-keyword:
+    runs-on: ubuntu-latest
+    outputs:
+      level: ${{ steps.get-keyword.outputs.level }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: get keyword
+        run: |
+          echo level=Undefied >> $GITHUB_OUTPUT
+          
+          keyword=$(cat keyword-list.txt)
+          for keyword in $keywords; do
+            if [[ "${{ github.event.issue.title }}" =~ "$keyword" ]]; then
+              echo level=$keyword >> $GITHUB_OUTPUT
+            fi
+          done
+      - name: get out
+        run: |
+          echo ${{ steps.get-keyword.outputs.level }}
