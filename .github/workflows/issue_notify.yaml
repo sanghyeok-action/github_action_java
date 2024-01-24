@@ -25,3 +25,33 @@ jobs:
       - name: get out
         run: |
           echo ${{ steps.get-keyword.outputs.level }}
+
+  slack:
+    needs: [get-keyword]
+    if: needs.get-keyword.outputs.level != 'Undefined'
+    runs-on: ubuntu-latest
+    environment: ${{ needs.get-keyword.outputs.level }}
+    steps:
+      - name: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          # This data can be any valid JSON from a previous step in the GitHub Action
+          payload: |
+            {
+             "attachments": [
+                {
+                  "pretext": "issue alert message",
+                  "color": "28a745",
+                  "fields": [
+                    {
+                      "title": "Level : ${{ needs.get-keyword.outputs.level }}",
+                      "short": true,
+                      "value": "issue url : ${{ github.event.issue.html_url }}"
+                    }
+                  ]
+                }
+              ]
+            }
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+            SLACJ_WEBHOOK-TYPE: INCOMING_WEBHOOK
